@@ -7,8 +7,8 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 {
-    origin: ["https://mern-signup-fronend.vercel.app"]
-    methods: ["POST", "GET"]
+    origin: ["https://mern-signup-fronend.vercel.app"],
+    methods: ["POST", "GET"],
     credentials: true
 }
 
