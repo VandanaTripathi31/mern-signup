@@ -19,8 +19,7 @@ const Login = () => {
             return;
         }
 
-        axios
-            .post('https://mern-signup-api.vercel.app/login', { email, password })
+        axios.post('https://mern-signup-api.vercel.app/login', { email, password })
             .then((result) => {
                 console.log(result);
                 if (result.data === "Success") {
