@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ["https://mern-signup-fronend.vercel.app"],
+    app.use(cors({ origin: 'https://mern-signup-frontend.vercel.app' })),
     methods: ["POST", "GET"],
     credentials: true,
 }));
