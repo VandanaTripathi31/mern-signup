@@ -8,9 +8,9 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ["https://mern-signup-fronend.vercel.app"], // Allow requests from your frontend
+    origin: ["https://mern-signup-fronend.vercel.app"],
     methods: ["POST", "GET"],
-    credentials: true
+    credentials: true,
 }));
 
 // MongoDB connection
@@ -31,12 +31,22 @@ app.post('/register', (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-        return res.status(400).json("All fields are required"); // 400: Bad Request
+        return res.status(400).json("All fields are required");
     }
 
-    EmployeeModel.create({ name, email, password })
-        .then(employee => res.status(201).json(employee)) // 201: Created
-        .catch(err => res.status(500).json(err)); // 500: Internal Server Error
+    // Check for duplicate email
+    EmployeeModel.findOne({ email })
+        .then(existingUser => {
+            if (existingUser) {
+                return res.status(409).json("User already exists"); // 409: Conflict
+            }
+
+            // Save user
+            EmployeeModel.create({ name, email, password })
+                .then(employee => res.status(201).json(employee)) // 201: Created
+                .catch(err => res.status(500).json({ error: "Internal Server Error" })); // 500: Internal Server Error
+        })
+        .catch(err => res.status(500).json({ error: "Internal Server Error" }));
 });
 
 // Login endpoint
@@ -50,8 +60,9 @@ app.post('/login', (req, res) => {
     EmployeeModel.findOne({ email })
         .then(user => {
             if (user) {
+                // Compare passwords directly
                 if (user.password === password) {
-                    res.status(200).json("Login successful");
+                    res.status(200).json({ message: "Login successful" }); // 200: OK
                 } else {
                     res.status(401).json("Incorrect password"); // 401: Unauthorized
                 }
@@ -59,7 +70,7 @@ app.post('/login', (req, res) => {
                 res.status(404).json("User not found"); // 404: Not Found
             }
         })
-        .catch(err => res.status(500).json(err));
+        .catch(err => res.status(500).json({ error: "Internal Server Error" }));
 });
 
 // Start the server
