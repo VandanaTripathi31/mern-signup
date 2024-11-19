@@ -11,7 +11,7 @@ const Login = () => {
 
     const handeleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3001/login', {email,password})
+        axios.post('https://mern-signup-api.vercel.app/login', {email,password})
         .then(result => {
           console.log(result)
           if(result.data === "Success") {
